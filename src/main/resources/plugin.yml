@@ -1,4 +1,4 @@
-name: GeyserModelEngine
+name: TavernGeyserEngine
 version: '${project.version}'
 main: re.imc.geysermodelengine.GeyserModelEngine
 authors:
