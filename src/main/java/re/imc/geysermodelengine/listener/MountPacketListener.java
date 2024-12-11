@@ -12,6 +12,7 @@ import org.geysermc.floodgate.api.FloodgateApi;
 import re.imc.geysermodelengine.GeyserModelEngine;
 
 public class MountPacketListener implements PacketListener {
+
     @Override
     public void onPacketReceive(PacketReceiveEvent event) {
         if (event.getPacketType() != PacketType.Play.Client.ENTITY_ACTION) {

@@ -17,7 +17,6 @@ import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
-import re.imc.geysermodelengine.GeyserModelEngine;
 
 import java.util.Collection;
 import java.util.Set;
@@ -27,7 +26,6 @@ import java.util.concurrent.ThreadLocalRandom;
 @Getter
 public class PacketEntity {
 
-    // public static final MinecraftVersion V1_20_5 = new MinecraftVersion("1.20.5");
     public PacketEntity(EntityType type, Set<Player> viewers, Location location) {
         this.id = ThreadLocalRandom.current().nextInt(300000000, 400000000);
         this.uuid = UUID.randomUUID();
@@ -42,6 +40,7 @@ public class PacketEntity {
     private Set<Player> viewers;
     private Location location;
     private boolean removed = false;
+
     public @NotNull Location getLocation() {
         return location;
     }
@@ -70,8 +69,6 @@ public class PacketEntity {
     }
 
     public void sendSpawnPacket(Collection<Player> players) {
-        // EntitySpawnPacket packet = new EntitySpawnPacket(id, uuid, type, location);
-        // EntityMetadataPacket metadataPacket = new EntityMetadataPacket(id);
         WrapperPlayServerSpawnEntity spawnEntity = new WrapperPlayServerSpawnEntity(id, uuid, EntityTypes.BAT, SpigotConversionUtil.fromBukkitLocation(location), location.getYaw(), 0, null);
         players.forEach(player -> PacketEvents.getAPI().getPlayerManager().sendPacket(player, spawnEntity));
     }
@@ -83,7 +80,7 @@ public class PacketEntity {
         if (PacketEvents.getAPI().getServerManager().getVersion().isNewerThanOrEquals(ServerVersion.V_1_21_2)) {
             packet = new WrapperPlayServerEntityPositionSync(id, data, false);
         } else {
-            packet = new WrapperPlayServerEntityTeleport(id, data, RelativeFlag.NONE,false);
+            packet = new WrapperPlayServerEntityTeleport(id, data, RelativeFlag.NONE, false);
         }
         players.forEach(player -> PacketEvents.getAPI().getPlayerManager().sendPacket(player, packet));
 
@@ -97,84 +94,4 @@ public class PacketEntity {
     public int getEntityId() {
         return id;
     }
-
-
-    /*
-    public boolean teleport(@NotNull Location location) {
-        this.location = location.clone();
-        sendLocationPacket(viewers);
-        return true;
-    }
-
-
-    public void remove() {
-        removed = true;
-        sendEntityDestroyPacket(viewers);
-    }
-
-    public boolean isDead() {
-        return removed;
-    }
-
-    public boolean isValid() {
-        return !removed;
-    }
-
-    public void sendSpawnPacket(Collection<Player> players) {
-        EntitySpawnPacket packet = new EntitySpawnPacket(id, uuid, type, location);
-        // EntityMetadataPacket metadataPacket = new EntityMetadataPacket(id);
-
-        players.forEach(player -> {
-            ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet.encode());
-        });
-        sendAllEquipmentPacket(players);
-        // players.forEach(player -> ProtocolLibrary.getProtocolManager().sendServerPacket(player, metadataPacket.encode()));
-    }
-
-    public void sendAllEquipmentPacket(Collection<Player> players) {
-        for (Map.Entry<EnumWrappers.ItemSlot, ItemStack> e : equipment.entrySet()) {
-            EntityEquipmentPacket packet = new EntityEquipmentPacket(id, e.getKey(), e.getValue());
-
-            players.forEach(player -> {
-                ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet.encode());
-            });
-        }
-    }
-
-    public void sendLocationPacket(Collection<Player> players) {
-        WrapperPacket packet = MinecraftVersion.v1_21_2.atOrAbove() ? new EntityPositionSyncPacket(id, location) : new EntityTeleportPacket(id, location);
-        players.forEach(player -> ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet.encode()));
-
-    }
-
-    public void sendHurtPacket(Collection<Player> players) {
-        // 1.21 error
-        if (MinecraftVersion.getCurrentVersion().compareTo(V1_20_5) < 0) {
-          }
-    }
-      EntityHurtPacket packet = new EntityHurtPacket(id);
-            players.forEach(player -> ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet.encode()));
-
-    public void sendEntityDestroyPacket(Collection<Player> players) {
-        EntityDestroyPacket packet = new EntityDestroyPacket(id);
-        players.forEach(player -> ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet.encode()));
-    }
-
-    public int getEntityId() {
-        return id;
-    }
-
-    public void setSlot(EnumWrappers.ItemSlot slot, ItemStack itemStack) {
-        if (itemStack == null) {
-            itemStack = new ItemStack(Material.AIR);
-        }
-        equipment.put(slot, itemStack);
-        EntityEquipmentPacket packet = new EntityEquipmentPacket(id, slot, itemStack);
-        viewers.forEach(player -> {
-            ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet.encode());
-        });
-    }
-
-     */
 }
-

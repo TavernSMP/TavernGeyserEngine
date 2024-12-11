@@ -2,8 +2,6 @@ package re.imc.geysermodelengine;
 
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketListenerPriority;
-import com.github.retrooper.packetevents.protocol.entity.type.EntityType;
-import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.ticxo.modelengine.api.ModelEngineAPI;
@@ -80,7 +78,7 @@ public final class GeyserModelEngine extends JavaPlugin {
     public void onEnable() {
         PacketEvents.getAPI().init();
         saveDefaultConfig();
-        // alwaysSendSkin = getConfig().getBoolean("always-send-skin");
+
         sendDelay = getConfig().getInt("data-send-delay", 0);
         scheduler = Executors.newScheduledThreadPool(getConfig().getInt("thread-pool-size", 4));
         viewDistance = getConfig().getInt("entity-view-distance", 60);
@@ -88,24 +86,13 @@ public final class GeyserModelEngine extends JavaPlugin {
         joinSendDelay = getConfig().getInt("join-send-delay", 20);
         entityPositionUpdatePeriod = getConfig().getLong("entity-position-update-period", 35);
         enablePartVisibilityModels.addAll(getConfig().getStringList("enable-part-visibility-models"));
+
         if (joinSendDelay > 0) {
             joinedPlayer = CacheBuilder.newBuilder()
                     .expireAfterWrite(joinSendDelay * 50L, TimeUnit.MILLISECONDS).build();
         }
         instance = this;
         PacketEvents.getAPI().getEventManager().registerListener(new MountPacketListener(), PacketListenerPriority.NORMAL);
-        /*
-        scheduler.scheduleAtFixedRate(() -> {
-            try {
-                for (Map<ActiveModel, ModelEntity> models : ModelEntity.ENTITIES.values()) {
-                    models.values().forEach(ModelEntity::teleportToModel);
-                }
-            } catch (Throwable t) {
-                t.printStackTrace();
-            }
-        }, 10, entityPositionUpdatePeriod, TimeUnit.MILLISECONDS);
-
-         */
 
         scheduler.scheduleWithFixedDelay(() -> {
             try {
@@ -148,7 +135,5 @@ public final class GeyserModelEngine extends JavaPlugin {
                 modelEntity.getEntity().remove();
             });
         }
-        // Plugin shutdown logic
     }
-
 }

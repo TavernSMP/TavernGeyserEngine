@@ -7,9 +7,7 @@ import com.ticxo.modelengine.api.animation.handler.AnimationHandler;
 import com.ticxo.modelengine.api.entity.CullType;
 import com.ticxo.modelengine.api.model.ActiveModel;
 import com.ticxo.modelengine.api.model.ModeledEntity;
-import com.ticxo.modelengine.api.model.bone.BoneBehaviorTypes;
 import com.ticxo.modelengine.api.model.bone.ModelBone;
-import com.ticxo.modelengine.api.model.bone.type.Mount;
 import com.ticxo.modelengine.api.model.render.DisplayRenderer;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +15,6 @@ import me.zimzaza4.geyserutils.spigot.api.EntityUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.geysermc.floodgate.api.FloodgateApi;
 import org.joml.Vector3f;
 import re.imc.geysermodelengine.GeyserModelEngine;
@@ -92,18 +89,13 @@ public class EntityTask {
             sendHitBoxToAll();
         }
 
-        // Optional<Player> player = viewers.stream().findAny();
-        // if (player.isEmpty()) return
-
         if (viewers.isEmpty()) {
             return;
         }
-        // updateEntityProperties(viewers, false);
 
         // do not actually use this, atleast bundle these up ;(
         sendScale(viewers, false);
         sendColor(viewers, false);
-
 
     }
 
@@ -266,16 +258,9 @@ public class EntityTask {
             }
         }
 
-        // System.out.println("AN: " + animUpdates.size() + ", BO:" + boneUpdates.size());
         if (GeyserModelEngine.getInstance().isDebug()) {
             GeyserModelEngine.getInstance().getLogger().info(animUpdates.toString());
         }
-
-
-        //Collections.sort(list);
-        //System.out.println(list);
-        //System.out.println(boneUpdates);
-        //System.out.println(intUpdates);
 
         for (Player player : players) {
             EntityUtils.sendIntProperties(player, entity, intUpdates);
@@ -337,25 +322,9 @@ public class EntityTask {
         }
         CullType type = model.getActiveModel().getModeledEntity().getBase().getData().getTracking().get(player);
         return type != null;
-        /*
-        if (entity.getLocation().getChunk() == player.getChunk()) {
-            return true;
-        }
-        if (entity.getLocation().getWorld() != player.getWorld()) {
-            return false;
-        }
-        if (player.getLocation().distanceSquared(entity.getLocation()) > player.getSimulationDistance() * player.getSimulationDistance() * 256) {
-            return false;
-        }
-        if (player.getLocation().distance(entity.getLocation()) > model.getActiveModel().getModeledEntity().getBase().getRenderRadius()) {
-            return false;
-        }
-        return true;
-         */
     }
 
     public void cancel() {
-        // syncTask.cancel();
         scheduledFuture.cancel(true);
     }
 
