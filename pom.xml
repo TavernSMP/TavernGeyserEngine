@@ -126,7 +126,7 @@
         <dependency>
             <groupId>com.ticxo.modelengine</groupId>
             <artifactId>ModelEngine</artifactId>
-            <version>R4.0.4</version>
+            <version>R4.0.5</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/libs/ModelEngine-4.0.5.jar</systemPath>
         </dependency>
