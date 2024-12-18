@@ -288,7 +288,6 @@ public class EntityTask {
         float w = 0;
         if (model.getActiveModel().isShadowVisible()) {
             if (model.getActiveModel().getModelRenderer() instanceof DisplayRenderer displayRenderer) {
-                w = displayRenderer.getHitbox().getShadowRadius().get();
             }
         }
         EntityUtils.sendCustomHitBox(viewer, model.getEntity().getEntityId(), 0.02f, w);

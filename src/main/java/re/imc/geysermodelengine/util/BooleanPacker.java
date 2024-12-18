@@ -65,6 +65,4 @@ public class BooleanPacker {
         }
         return booleansToInts(booleans);
     }
-
-
 }

@@ -60,6 +60,9 @@ public class BedrockMountControl {
                 }
 
             }
-        }.runTaskTimerAsynchronously(GeyserModelEngine.getInstance(), 1, 1);
+        }.runTaskTimerAsynchronously(GeyserModelEngine.getInstance(), 1,  1);
+
+
+
     }
 }

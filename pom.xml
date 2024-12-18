@@ -124,9 +124,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>re.imc.geysermodelengine</groupId>
+            <groupId>com.ticxo.modelengine</groupId>
             <artifactId>ModelEngine</artifactId>
-            <version>1.0.0</version>
+            <version>R4.0.4</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/libs/ModelEngine-4.0.5.jar</systemPath>
         </dependency>
@@ -146,7 +146,7 @@
         <dependency>
             <groupId>com.github.retrooper</groupId>
             <artifactId>packetevents-spigot</artifactId>
-            <version>2.6.0</version>
+            <version>2.7.0</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>

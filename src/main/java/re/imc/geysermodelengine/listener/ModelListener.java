@@ -57,6 +57,63 @@ public class ModelListener implements Listener {
         }
     }
 
+
+
+
+
+
+    /*
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onModelEntityHurt(EntityDamageEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        Map<ActiveModel, ModelEntity> model = ModelEntity.ENTITIES.get(event.getEntity().getEntityId());
+        if (model != null) {
+            for (Map.Entry<ActiveModel, ModelEntity> entry : model.entrySet()) {
+                if (!entry.getValue().getEntity().isDead()) {
+                    //entry.getValue().getEntity().sendHurtPacket(entry.getValue().getViewers());
+                }
+            }
+
+        }
+    }
+
+
+    /*
+
+    @EventHandler
+    public void onModelAttack(EntityDamageByEntityEvent event) {
+        ModelEntity model = ModelEntity.ENTITIES.get(event.getDamager().getEntityId());
+        if (model != null) {
+            EntityTask task = model.getTask();
+
+            task.playAnimation("attack", 55);
+        }
+    }|
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onAnimationPlay(AnimationPlayEvent event) {
+        Map<ActiveModel, ModelEntity> map = ModelEntity.ENTITIES.get(event.getModel().getModeledEntity().getBase().getEntityId());
+        if (map == null) {
+            return;
+        }
+
+        ModelEntity model = map.get(event.getModel());
+        model.getTask().updateEntityProperties(model.getViewers(), false, event.getProperty().getName());
+    }
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onAnimationEnd(AnimationEndEvent event) {
+        Map<ActiveModel, ModelEntity> map = ModelEntity.ENTITIES.get(event.getModel().getModeledEntity().getBase().getEntityId());
+        if (map == null) {
+            return;
+        }
+
+        ModelEntity model = map.get(event.getModel());
+        model.getTask().updateEntityProperties(model.getViewers(), false, event.getProperty().);
+    }
+     */
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         GeyserModelEngine.getInstance().getJoinedPlayer().put(event.getPlayer(), true);
