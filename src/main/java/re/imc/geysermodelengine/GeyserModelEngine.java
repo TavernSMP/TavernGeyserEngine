@@ -16,6 +16,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import re.imc.geysermodelengine.commands.ReloadCommand;
 import re.imc.geysermodelengine.listener.ModelListener;
 import re.imc.geysermodelengine.listener.MountPacketListener;
 import re.imc.geysermodelengine.model.BedrockMountControl;
@@ -78,7 +79,6 @@ public final class GeyserModelEngine extends JavaPlugin {
     public void onEnable() {
         PacketEvents.getAPI().init();
         saveDefaultConfig();
-        // alwaysSendSkin = getConfig().getBoolean("always-send-skin");
         sendDelay = getConfig().getInt("data-send-delay", 0);
         scheduler = Executors.newScheduledThreadPool(getConfig().getInt("thread-pool-size", 4));
         viewDistance = getConfig().getInt("entity-view-distance", 60);
@@ -91,19 +91,8 @@ public final class GeyserModelEngine extends JavaPlugin {
                     .expireAfterWrite(joinSendDelay * 50L, TimeUnit.MILLISECONDS).build();
         }
         instance = this;
-        PacketEvents.getAPI().getEventManager().registerListener(new MountPacketListener(), PacketListenerPriority.NORMAL);
-        /*
-        scheduler.scheduleAtFixedRate(() -> {
-            try {
-                for (Map<ActiveModel, ModelEntity> models : ModelEntity.ENTITIES.values()) {
-                    models.values().forEach(ModelEntity::teleportToModel);
-                }
-            } catch (Throwable t) {
-                t.printStackTrace();
-            }
-        }, 10, entityPositionUpdatePeriod, TimeUnit.MILLISECONDS);
 
-         */
+        PacketEvents.getAPI().getEventManager().registerListener(new MountPacketListener(), PacketListenerPriority.NORMAL);
 
         scheduler.scheduleWithFixedDelay(() -> {
             try {
@@ -115,27 +104,9 @@ public final class GeyserModelEngine extends JavaPlugin {
             }
         }, 10, entityPositionUpdatePeriod, TimeUnit.MILLISECONDS);
 
-
         Bukkit.getPluginManager().registerEvents(new ModelListener(), this);
-        Bukkit.getScheduler()
-                .runTaskLater(GeyserModelEngine.getInstance(), () -> {
-                    for (World world : Bukkit.getWorlds()) {
-                        for (Entity entity : world.getEntities()) {
-                            if (!ModelEntity.ENTITIES.containsKey(entity.getEntityId())) {
-                                ModeledEntity modeledEntity = ModelEngineAPI.getModeledEntity(entity);
-                                if (modeledEntity != null) {
-                                    Optional<ActiveModel> model = modeledEntity.getModels().values().stream().findFirst();
-                                    model.ifPresent(m -> ModelEntity.create(modeledEntity, m));
-                                }
-                            }
-                        }
-                    }
-                    initialized = true;
 
-                }, 100);
-
-
-        BedrockMountControl.startTask();
+        getCommand("geysermodelengine").setExecutor(new ReloadCommand(this));
     }
 
     @Override
