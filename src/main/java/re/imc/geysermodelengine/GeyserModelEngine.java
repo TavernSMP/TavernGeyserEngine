@@ -79,6 +79,7 @@ public final class GeyserModelEngine extends JavaPlugin {
     public void onEnable() {
         PacketEvents.getAPI().init();
         saveDefaultConfig();
+
         sendDelay = getConfig().getInt("data-send-delay", 0);
         scheduler = Executors.newScheduledThreadPool(getConfig().getInt("thread-pool-size", 4));
         viewDistance = getConfig().getInt("entity-view-distance", 60);
@@ -86,13 +87,35 @@ public final class GeyserModelEngine extends JavaPlugin {
         joinSendDelay = getConfig().getInt("join-send-delay", 20);
         entityPositionUpdatePeriod = getConfig().getLong("entity-position-update-period", 35);
         enablePartVisibilityModels.addAll(getConfig().getStringList("enable-part-visibility-models"));
+
         if (joinSendDelay > 0) {
             joinedPlayer = CacheBuilder.newBuilder()
                     .expireAfterWrite(joinSendDelay * 50L, TimeUnit.MILLISECONDS).build();
         }
-        instance = this;
 
+        instance = this;
         PacketEvents.getAPI().getEventManager().registerListener(new MountPacketListener(), PacketListenerPriority.NORMAL);
+
+        Bukkit.getScheduler()
+                .runTaskLater(GeyserModelEngine.getInstance(), () -> {
+                    for (World world : Bukkit.getWorlds()) {
+                        for (Entity entity : world.getEntities()) {
+                            if (!ModelEntity.ENTITIES.containsKey(entity.getEntityId())) {
+                                ModeledEntity modeledEntity = ModelEngineAPI.getModeledEntity(entity);
+                                if (modeledEntity != null) {
+                                    Optional<ActiveModel> model = modeledEntity.getModels().values().stream().findFirst();
+                                    model.ifPresent(m -> ModelEntity.create(modeledEntity, m));
+                                }
+                            }
+                        }
+                    }
+                    initialized = true;
+                }, 100);
+
+        BedrockMountControl.startTask();
+
+        getCommand("geysermodelengine").setExecutor(new ReloadCommand(this));
+        Bukkit.getPluginManager().registerEvents(new ModelListener(), this);
 
         scheduler.scheduleWithFixedDelay(() -> {
             try {
@@ -103,11 +126,8 @@ public final class GeyserModelEngine extends JavaPlugin {
                 t.printStackTrace();
             }
         }, 10, entityPositionUpdatePeriod, TimeUnit.MILLISECONDS);
-
-        Bukkit.getPluginManager().registerEvents(new ModelListener(), this);
-
-        getCommand("geysermodelengine").setExecutor(new ReloadCommand(this));
     }
+
 
     @Override
     public void onDisable() {
@@ -117,7 +137,6 @@ public final class GeyserModelEngine extends JavaPlugin {
                 modelEntity.getEntity().remove();
             });
         }
-        // Plugin shutdown logic
     }
 
 }
