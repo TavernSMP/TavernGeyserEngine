@@ -51,6 +51,7 @@ public class EntityTask {
     public EntityTask(ModelEntity model) {
         this.model = model;
     }
+
     public void runAsync() {
         PacketEntity entity = model.getEntity();
         if (entity.isDead()) {
@@ -83,7 +84,7 @@ public class EntityTask {
             }
         }
 
-        tick ++;
+        tick++;
         if (tick > 400) {
             tick = 0;
             sendHitBoxToAll();
@@ -140,7 +141,7 @@ public class EntityTask {
                 sendScale(Collections.singleton(player), true);
                 sendColor(Collections.singleton(player), true);
                 updateEntityProperties(Collections.singleton(player), true);
-            }, 1000, TimeUnit.MILLISECONDS);
+            }, 500, TimeUnit.MILLISECONDS);
         }, delay * 50L, TimeUnit.MILLISECONDS);
     }
 
